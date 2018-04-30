@@ -86,13 +86,22 @@ public class DatabaseHandler {
     
     **This method will require a recipe object and an array of ingredients**
     */
-    public static void addRecipe(Recipe r, Ingredient[] i){
+    public static void addRecipe(Recipe r, Ingredient[] i) throws InterruptedException{
         //add recipe to the table
         insertRecipe(r);
         //need to get r's ID number from the database
         getRecipeID(r);
+        //insert all ingredients
+        //for(int j = 0; j<i.length;j++){
+        //    insertIngredient(i[j]);
+        //}
         //add all of the ingredients required to the RecipeIngredients table
         
+        insertRecipeIngredient(r,i);
+	
+        
+    }
+    private static void insertRecipeIngredient(Recipe r, Ingredient[]i){
         //creating connection to the database
         Connection conn = DatabaseHandler.setupConnection();
         //creating oracle objects
@@ -105,7 +114,7 @@ public class DatabaseHandler {
                 TODO: either get rid of quantity from the database or add qty to
                 the ingredient class
                 */
-                String sqlStatement = "insert into RecipeIngredients values (?, ?)";            
+                String sqlStatement = "insert into RecipeIngredients values (?, ?, 1)";            
 
                 pst = (OraclePreparedStatement) conn.prepareStatement(sqlStatement);            
                 //attaching the data to the statement           
@@ -130,7 +139,6 @@ public class DatabaseHandler {
             }
         }
     }
-    
     //this method will insert a recipe into the database
     //this method is private because the gui should use addRecipe in order to ensure
     //that the user is providing the recipe along with the ingredients.
@@ -147,9 +155,9 @@ public class DatabaseHandler {
 
             pst = (OraclePreparedStatement) conn.prepareStatement(sqlStatement);            
             //attaching the data to the statement           
-            pst.setString(1, r.getName());
+            pst.setString(1, r.getCategory());
             pst.setString(2, r.getInstruction());
-            pst.setString(3, r.getCategory());
+            pst.setString(3, r.getName());
             //inserting into the database
             pst.execute();                                    
         }
