@@ -101,6 +101,8 @@ public class DatabaseHandler {
 	
         
     }
+    
+    //this method will insert the recipe and corresponding ingredients into the recipeIngredients table
     private static void insertRecipeIngredient(Recipe r, Ingredient[]i){
         //creating connection to the database
         Connection conn = DatabaseHandler.setupConnection();
@@ -139,6 +141,7 @@ public class DatabaseHandler {
             }
         }
     }
+    
     //this method will insert a recipe into the database
     //this method is private because the gui should use addRecipe in order to ensure
     //that the user is providing the recipe along with the ingredients.
@@ -411,5 +414,153 @@ public class DatabaseHandler {
         }
         //return the list        
         return returnedRecipes;
+    }
+    
+    //this method will query the database for recipesIDs from the MealPlanRecipe table
+    public static Recipe[] searchRecipeFromMealPlanRecipe(MealPlan m){
+        //creating connection to database
+        Connection conn = DatabaseHandler.setupConnection();
+        //preparing oracle objects
+        OraclePreparedStatement pst = null;
+        OracleResultSet rs = null;
+        //preparing Recipe List to return
+        List<Recipe> currentRecipesIDs = new ArrayList<>();        
+        try
+        {
+            //grabbing all rows from the recipe table
+            String sqlStatement = "SELECT * FROM MealPlanRecipe where MealID =? and Meal =?";            
+            pst = (OraclePreparedStatement) conn.prepareStatement(sqlStatement);
+            //attach data to prepared statement
+            pst.setInt(1, m.getID());
+            pst.setString(2,m.getMeal());
+            //will contain the rows from the query
+            rs = (OracleResultSet) pst.executeQuery();
+            //iterating through each row
+            while(rs.next()){
+                //create recipe object from the RecipeID.
+                int id = rs.getInt("RecipeID");
+                
+                //make a recipe object from the id
+                Recipe row = new Recipe(id);
+                //add the recipe to the list
+                currentRecipesIDs.add(row);
+            }
+        }
+        catch (Exception e)
+        {
+            //display an error message of what went wrong
+            JOptionPane.showMessageDialog(null, e);
+        }
+        finally
+        {            
+            //close the connections
+            DatabaseHandler.close(rs);
+            DatabaseHandler.close(pst);
+            DatabaseHandler.close(conn);
+        } 
+        //turn the list into an array for the calling method
+        //TODO: ask Brain if the calling method can use a list instead of an array.
+        Recipe[] returnedRecipes = new Recipe[currentRecipesIDs.size()];
+        for(int i=0;i<currentRecipesIDs.size();i++){
+           returnedRecipes[i]=currentRecipesIDs.get(i);
+        }
+        //return the list        
+        return returnedRecipes;
+    }
+    
+    //this method will query the database for recipes based on their ids and get their details
+    public static Recipe queryRecipeDetails(Recipe r){
+        //creating connection to database
+        Connection conn = DatabaseHandler.setupConnection();
+        //preparing oracle objects
+        OraclePreparedStatement pst = null;
+        OracleResultSet rs = null;
+        //preparing Recipe List to return
+        //List<Recipe> currentRecipes = new ArrayList<>();        
+        try
+        {
+            //grabbing all rows from the recipe table
+            String sqlStatement = "SELECT * FROM Recipe where RecipeID =?";            
+            pst = (OraclePreparedStatement) conn.prepareStatement(sqlStatement);
+            //add data to pst
+            pst.setInt(1, r.getID());
+            //will contain the rows from the query
+            rs = (OracleResultSet) pst.executeQuery();
+            //iterating through each row
+            while(rs.next()){
+                //create recipe object from the columns in the row.
+                String category = rs.getString("Category");
+                String instruction = rs.getString("Instruction");
+                String name = rs.getString("Name");
+                //make a recipe object from the columns
+                r.setCategory(category);
+                r.setInstruction(instruction);
+                r.setName(name);
+                //add the recipe to the list
+                //currentRecipes.add(row);
+            }
+        }
+        catch (Exception e)
+        {
+            //display an error message of what went wrong
+            JOptionPane.showMessageDialog(null, e);
+        }
+        finally
+        {            
+            //close the connections
+            DatabaseHandler.close(rs);
+            DatabaseHandler.close(pst);
+            DatabaseHandler.close(conn);
+        }                         
+        return r;
+    }
+    //this method will return the mealplan id
+    private static MealPlan getMealPlanID(MealPlan m){
+        //creating connection to database
+        Connection conn = DatabaseHandler.setupConnection();
+        //preparing oracle objects
+        OraclePreparedStatement pst = null;
+        OracleResultSet rs = null;                     
+        try
+        {
+            //grabbing all rows from the recipe table
+            String sqlStatement = "SELECT * FROM MealPlan WHERE DayOfWeek=?";            
+            pst = (OraclePreparedStatement) conn.prepareStatement(sqlStatement);
+            //adding data to prepared statement
+            pst.setString(1, m.getDay());
+            //will contain the rows from the query
+            rs = (OracleResultSet) pst.executeQuery();
+            //iterating through each row
+            while(rs.next()){
+                //set the mealplan's id
+                m.setID(rs.getInt("MealID"));
+            }
+        }
+        catch (Exception e)
+        {
+            //display an error message of what went wrong
+            JOptionPane.showMessageDialog(null, e);
+        }
+        finally
+        {            
+            //close the connections
+            DatabaseHandler.close(rs);
+            DatabaseHandler.close(pst);
+            DatabaseHandler.close(conn);
+        } 
+        //return the mealplan
+        return m;
+    }
+    //this method will query the database for mealplans that match a certian day and meal
+    public static Recipe[] searchMealPlans(MealPlan m){
+        //need to get mealplan id
+        getMealPlanID(m);
+        //get array of recipes
+        Recipe[] foundRecipes = searchRecipeFromMealPlanRecipe(m);
+        //add in the recipe details to the recipe objects
+        for(int i = 0; i<foundRecipes.length;i++){
+            queryRecipeDetails(foundRecipes[i]);
+        }
+        return foundRecipes;
     }
 }
