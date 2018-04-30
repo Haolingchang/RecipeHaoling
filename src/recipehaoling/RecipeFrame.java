@@ -12,6 +12,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import javax.swing.DefaultListModel;
 
 /*
  * To change this license header, choose License Headers in Project Properties.
@@ -30,6 +31,8 @@ public class RecipeFrame extends javax.swing.JFrame {
     
     //Variables
     private ArrayList<Ingredient> newIngredients = new ArrayList<>();
+    Recipe[] foundRecipes;
+    DefaultListModel listModel = new DefaultListModel();
        
     public RecipeFrame() {
         initComponents();
@@ -100,7 +103,7 @@ public class RecipeFrame extends javax.swing.JFrame {
         jScrollPane8 = new javax.swing.JScrollPane();
         recipeList = new javax.swing.JList<>();
         jScrollPane3 = new javax.swing.JScrollPane();
-        jTextArea1 = new javax.swing.JTextArea();
+        recipeInstruction = new javax.swing.JTextArea();
         addRecipePanel = new javax.swing.JPanel();
         jLabel6 = new javax.swing.JLabel();
         addRecipeName = new javax.swing.JTextField();
@@ -371,13 +374,14 @@ public class RecipeFrame extends javax.swing.JFrame {
         daysBox.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday" }));
 
         applyButton.setText("Apply");
+        applyButton.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                applyButtonActionPerformed(evt);
+            }
+        });
 
         recipeList.setFont(new java.awt.Font("Times New Roman", 0, 12)); // NOI18N
-        recipeList.setModel(new javax.swing.AbstractListModel<String>() {
-            String[] strings = { "Item 1", "Item 2", "Item 3", "Item 4", "Item 5" };
-            public int getSize() { return strings.length; }
-            public String getElementAt(int i) { return strings[i]; }
-        });
+        recipeList.setModel(listModel);
         recipeList.addMouseListener(new java.awt.event.MouseAdapter() {
             public void mouseClicked(java.awt.event.MouseEvent evt) {
                 recipeListMouseClicked(evt);
@@ -385,9 +389,9 @@ public class RecipeFrame extends javax.swing.JFrame {
         });
         jScrollPane8.setViewportView(recipeList);
 
-        jTextArea1.setColumns(20);
-        jTextArea1.setRows(5);
-        jScrollPane3.setViewportView(jTextArea1);
+        recipeInstruction.setColumns(20);
+        recipeInstruction.setRows(5);
+        jScrollPane3.setViewportView(recipeInstruction);
 
         javax.swing.GroupLayout jPanel3Layout = new javax.swing.GroupLayout(jPanel3);
         jPanel3.setLayout(jPanel3Layout);
@@ -852,10 +856,25 @@ public class RecipeFrame extends javax.swing.JFrame {
     }//GEN-LAST:event_radioBreakfastActionPerformed
 
     private void recipeListMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_recipeListMouseClicked
-        // TODO add your handling code here:
-        List<String> selectedRecipes = recipeList.getSelectedValuesList();
-        debugArea.setText(selectedRecipes.get(0));
+        String selectedRecipeName = recipeList.getSelectedValue();
+        for(Recipe r : foundRecipes){
+            if(r.name.equals(selectedRecipeName)){
+                recipeInstruction.setText(r.instruction);
+            }
+        }
     }//GEN-LAST:event_recipeListMouseClicked
+
+    private void applyButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_applyButtonActionPerformed
+                String selectedDay = daysBox.getActionCommand();
+        String selectedMeal = mealsGroup.getSelection().getActionCommand();
+        MealPlan selectedMealPlan = new MealPlan(selectedMeal, selectedDay);
+        foundRecipes = DatabaseHandler.searchMealPlans(selectedMealPlan);
+        DefaultListModel funclistModel = new DefaultListModel();
+        for(Recipe r : foundRecipes){
+            funclistModel.addElement(r.name);
+        }
+        listModel = funclistModel;
+    }//GEN-LAST:event_applyButtonActionPerformed
 
 
     /**
@@ -954,7 +973,6 @@ public class RecipeFrame extends javax.swing.JFrame {
     private javax.swing.JScrollPane jScrollPane6;
     private javax.swing.JScrollPane jScrollPane7;
     private javax.swing.JScrollPane jScrollPane8;
-    private javax.swing.JTextArea jTextArea1;
     private javax.swing.JCheckBox lunchPlannerCheckbox;
     private javax.swing.JTextField lunchPlannerTextView;
     private javax.swing.ButtonGroup mealsGroup;
@@ -966,6 +984,7 @@ public class RecipeFrame extends javax.swing.JFrame {
     private javax.swing.JRadioButton radioBreakfast;
     private javax.swing.JRadioButton radioDinner;
     private javax.swing.JRadioButton radioLunch;
+    private javax.swing.JTextArea recipeInstruction;
     private javax.swing.JList<String> recipeList;
     private javax.swing.JTextArea recipeSelectionListView;
     private javax.swing.JPanel searchResultsPane;
