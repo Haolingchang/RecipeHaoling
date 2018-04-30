@@ -13,8 +13,10 @@ public class MealPlan {
     private int id;
     private String meal;
     private String day;
+    private String weekID;
     
-    MealPlan(String m, String d){
+    MealPlan(String wID,String m, String d){
+        weekID = wID;
         meal = m;
         day = d;
     }
@@ -23,6 +25,12 @@ public class MealPlan {
     }
     public String getDay(){
         return day;
+    }
+    public String getWeekID(){
+        return weekID;
+    }
+    public void setWeekID(String i){
+        weekID = i;
     }
     public int getID(){
         return id;

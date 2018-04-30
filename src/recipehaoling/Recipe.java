@@ -11,10 +11,10 @@ package recipehaoling;
  * author: D Koger
  */
 public class Recipe {
-    int recipeID;
-    String category;
-    String instruction;
-    String name;
+    private int recipeID;
+    private String category;
+    private String instruction;
+    private String name;
     //full Constructor
     Recipe(int id, String cat, String instruct, String n){
         recipeID = id;
@@ -28,9 +28,13 @@ public class Recipe {
         instruction = instruct;
         name = n;
     }
-    //null constructor
-    Recipe(){
-        
+    //constructor with id
+    Recipe(int id){
+        recipeID = id;
+    }
+    //constructor with name
+    Recipe(String n){
+        name = n;
     }
     public int getID(){
         return recipeID;

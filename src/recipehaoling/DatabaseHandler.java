@@ -135,11 +135,12 @@ public class DatabaseHandler {
             finally
 
             {
+                
+            }
+        }
                 //closing the connections
                 DatabaseHandler.close(pst);
                 DatabaseHandler.close(conn);
-            }
-        }
     }
     
     //this method will insert a recipe into the database
@@ -324,7 +325,7 @@ public class DatabaseHandler {
     
     //this method will set query the database for a recipe and then set the objects
     //id to the RecipeID from the table
-    private static Recipe getRecipeID(Recipe r){
+    public static Recipe getRecipeID(Recipe r){
         //creating connection to database
         Connection conn = DatabaseHandler.setupConnection();
         //preparing oracle objects
@@ -333,12 +334,11 @@ public class DatabaseHandler {
         try
         {
             //grabbing all rows from the recipe table
-            String sqlStatement = "SELECT * FROM Recipe where Category=? and Instruction =? and Name=?";            
+            String sqlStatement = "SELECT * FROM Recipe where Name=?";            
             pst = (OraclePreparedStatement) conn.prepareStatement(sqlStatement);
             //adding data to sql statement
-            pst.setString(1,r.getCategory());
-            pst.setString(2,r.getInstruction());
-            pst.setString(3,r.getName());
+            
+            pst.setString(1,r.getName());
             //will contain the rows from the query
             rs = (OracleResultSet) pst.executeQuery();
             //iterating through each row
@@ -524,10 +524,11 @@ public class DatabaseHandler {
         try
         {
             //grabbing all rows from the recipe table
-            String sqlStatement = "SELECT * FROM MealPlan WHERE DayOfWeek=?";            
+            String sqlStatement = "SELECT * FROM MealPlan WHERE DayOfWeek=? and weekID=?";            
             pst = (OraclePreparedStatement) conn.prepareStatement(sqlStatement);
             //adding data to prepared statement
             pst.setString(1, m.getDay());
+            pst.setString(2, m.getWeekID());
             //will contain the rows from the query
             rs = (OracleResultSet) pst.executeQuery();
             //iterating through each row
@@ -562,5 +563,88 @@ public class DatabaseHandler {
             queryRecipeDetails(foundRecipes[i]);
         }
         return foundRecipes;
+    }
+    
+    //this method will add a mealplan and its recipes to mealplanRecipe table
+    public static void addMealPlan(MealPlan m, Recipe r){
+        //insert the mealplan into the table
+        insertMealPlan(m);
+        //add the mealplans id to the object
+        getMealPlanID(m);
+        //add the recipes id to the object
+        getRecipeID(r);
+        //insert into table
+        insertMealPlanRecipe(m,r);
+    }
+    
+    //this method will insert into the MealPlanRecipeTable
+    private static void insertMealPlanRecipe(MealPlan m, Recipe r){
+        //creating connection to the database
+        Connection conn = DatabaseHandler.setupConnection();
+        //creating oracle objects
+        OraclePreparedStatement pst = null;
+
+        try
+        {           
+            //creating the sql statement to insert the mealplanrecipe to the database
+            String sqlStatement = "insert into MealPlanRecipe values ( ? , ? , ?)";            
+
+            pst = (OraclePreparedStatement) conn.prepareStatement(sqlStatement);            
+            //attaching the data to the statement           
+            pst.setInt(1, r.getID());
+            pst.setInt(2, m.getID());
+            pst.setString(3, m.getMeal());
+            //inserting into the database
+            pst.execute();                                    
+        }
+        catch (Exception e)
+
+        {
+            //displaying what went wrong
+            JOptionPane.showMessageDialog(null, e);
+        }
+
+        finally
+
+        {
+            //closing the connections
+            DatabaseHandler.close(pst);
+            DatabaseHandler.close(conn);
+        }
+    }
+    //this method will insert a mealplan object into the database
+    private static void insertMealPlan(MealPlan m){
+        //creating connection to the database
+        Connection conn = DatabaseHandler.setupConnection();
+        //creating oracle objects
+        OraclePreparedStatement pst = null;
+
+        try
+        {           
+            //creating the sql statement to insert the mealplan to the database
+            String sqlStatement = "insert into MealPlan values (seq_mealplan.nextval, ?, ?)";            
+
+            pst = (OraclePreparedStatement) conn.prepareStatement(sqlStatement);            
+            //attaching the data to the statement           
+            pst.setString(1, m.getDay());
+            pst.setString(2,m.getWeekID());
+            
+            //inserting into the database
+            pst.execute();                                    
+        }
+        catch (Exception e)
+
+        {
+            //displaying what went wrong
+            JOptionPane.showMessageDialog(null, e);
+        }
+
+        finally
+
+        {
+            //closing the connections
+            DatabaseHandler.close(pst);
+            DatabaseHandler.close(conn);
+        }
     }
 }
