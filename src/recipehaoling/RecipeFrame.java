@@ -10,6 +10,8 @@ import javax.swing.ListModel;
 import oracle.jdbc.OraclePreparedStatement;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 /*
  * To change this license header, choose License Headers in Project Properties.
@@ -423,11 +425,12 @@ public class RecipeFrame extends javax.swing.JFrame {
                 .addContainerGap()
                 .addComponent(jLabel4, javax.swing.GroupLayout.PREFERRED_SIZE, 27, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(radioBreakfast)
-                    .addComponent(radioLunch)
-                    .addComponent(radioDinner)
-                    .addComponent(daysBox, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(daysBox, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                        .addComponent(radioBreakfast)
+                        .addComponent(radioLunch)
+                        .addComponent(radioDinner)))
                 .addGap(18, 18, 18)
                 .addComponent(applyButton)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
@@ -788,7 +791,7 @@ public class RecipeFrame extends javax.swing.JFrame {
 
         //create a new ingredient object
         Ingredient ingredient = new Ingredient(ingredientN, ingredientC, ingredientF, ingredientS, ingredientG, ingredientP, ingredientSug);
-
+        DatabaseHandler.insertIngredient(ingredient);
         //add the object into ingredient list
         newIngredients.add(ingredient);
 
@@ -822,9 +825,18 @@ public class RecipeFrame extends javax.swing.JFrame {
         instructions = addRecipeInstructions.getText();
         recipeName = addRecipeName.getText();
 
+        //changing list to array
+        Ingredient[] addedIngredients = new Ingredient[newIngredients.size()];
+        for(int i = 0; i<newIngredients.size();i++){
+            addedIngredients[i]=newIngredients.get(i);
+        }
         //New recipe
         Recipe recipe = new Recipe(recipeCat, instructions, recipeName);
-        DatabaseHandler.addRecipe(recipe, (Ingredient[])newIngredients.toArray());
+        try {
+            DatabaseHandler.addRecipe(recipe, addedIngredients);
+        } catch (InterruptedException ex) {
+           //do nothing
+        }
     }//GEN-LAST:event_storeRecipeActionPerformed
 
     private void radioDinnerActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_radioDinnerActionPerformed
