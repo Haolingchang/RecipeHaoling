@@ -49,12 +49,14 @@ public class RecipeFrame extends javax.swing.JFrame {
         setLocationRelativeTo(null);
         setResizable(false);
 	
+        Ingredient[] allIngredients = DatabaseHandler.getIngredients();
+        inititializeFridgeTab(allIngredients);
         //hide search results view until there is an actual set of results to display
         searchResultsPane.setVisible(false);
         //this code will be use to modify what is displayed in the fridge, method needs to be created to generate fridge items
-        fridgeListView.setText("Display fridge items, list nutrition facts.");
+       // fridgeListView.setText("Display fridge items, list nutrition facts.");
         //this will display the generated shopping list
-        shoppingListView.setText("generate the shopping list here.");
+        //shoppingListView.setText("generate the shopping list here.");
         //this is the recipe list view in the planner tab, have client to check the boxes
         //that they wish to have a recipe to be entered at the checked time period
         
@@ -86,20 +88,22 @@ public class RecipeFrame extends javax.swing.JFrame {
         ManagerSheet = new javax.swing.JTabbedPane();
         jPanel1 = new javax.swing.JPanel();
         jScrollPane1 = new javax.swing.JScrollPane();
-        fridgeListView = new javax.swing.JTextArea();
+        fridgeListView = new javax.swing.JList<>();
         jScrollPane2 = new javax.swing.JScrollPane();
-        shoppingListView = new javax.swing.JTextArea();
+        shoppingListView = new javax.swing.JList<>();
         jLabel2 = new javax.swing.JLabel();
-        jLabel3 = new javax.swing.JLabel();
+        shoppingLabel = new javax.swing.JLabel();
         jLabel9 = new javax.swing.JLabel();
         mealPlanShoppingList = new javax.swing.JTextField();
-        jButton1 = new javax.swing.JButton();
+        generateShoppingList = new javax.swing.JButton();
+        moveToFridgeButton = new javax.swing.JButton();
+        deleteFromFridgeButton = new javax.swing.JButton();
         jPanel2 = new javax.swing.JPanel();
-        DayOfWeekDropMenu = new javax.swing.JComboBox<String>();
+        DayOfWeekDropMenu = new javax.swing.JComboBox<>();
         jPanel4 = new javax.swing.JPanel();
         jLabel5 = new javax.swing.JLabel();
         recipeSelectionListView = new javax.swing.JScrollPane();
-        jList1 = new javax.swing.JList<String>();
+        jList1 = new javax.swing.JList<>();
         jPanel5 = new javax.swing.JPanel();
         breakfastPlannerCheckbox = new javax.swing.JCheckBox();
         lunchPlannerCheckbox = new javax.swing.JCheckBox();
@@ -117,10 +121,10 @@ public class RecipeFrame extends javax.swing.JFrame {
         radioLunch = new javax.swing.JRadioButton();
         radioDinner = new javax.swing.JRadioButton();
         jLabel4 = new javax.swing.JLabel();
-        daysBox = new javax.swing.JComboBox<String>();
+        daysBox = new javax.swing.JComboBox<>();
         applyButton = new javax.swing.JButton();
         jScrollPane8 = new javax.swing.JScrollPane();
-        recipeList = new javax.swing.JList<String>();
+        recipeList = new javax.swing.JList<>();
         jScrollPane3 = new javax.swing.JScrollPane();
         recipeInstruc = new javax.swing.JTextArea();
         weekId = new javax.swing.JTextField();
@@ -152,7 +156,7 @@ public class RecipeFrame extends javax.swing.JFrame {
         addIngredient = new javax.swing.JButton();
         searchResultsPane = new javax.swing.JPanel();
         jScrollPane5 = new javax.swing.JScrollPane();
-        searchResultList = new javax.swing.JList<String>();
+        searchResultList = new javax.swing.JList<>();
         dateLabel = new javax.swing.JLabel();
         dateTextView = new javax.swing.JTextField();
         jScrollPane7 = new javax.swing.JScrollPane();
@@ -180,26 +184,48 @@ public class RecipeFrame extends javax.swing.JFrame {
             }
         });
 
-        fridgeListView.setEditable(false);
-        fridgeListView.setColumns(20);
-        fridgeListView.setFont(new java.awt.Font("Times New Roman", 0, 12)); // NOI18N
-        fridgeListView.setRows(5);
+        fridgeListView.setModel(new javax.swing.AbstractListModel<String>() {
+            String[] strings = { "Item 1", "Item 2", "Item 3", "Item 4", "Item 5" };
+            public int getSize() { return strings.length; }
+            public String getElementAt(int i) { return strings[i]; }
+        });
         jScrollPane1.setViewportView(fridgeListView);
 
-        shoppingListView.setColumns(20);
-        shoppingListView.setFont(new java.awt.Font("Times New Roman", 0, 12)); // NOI18N
-        shoppingListView.setRows(5);
+        shoppingListView.setModel(new javax.swing.AbstractListModel<String>() {
+            String[] strings = { "Item 1", "Item 2", "Item 3", "Item 4", "Item 5" };
+            public int getSize() { return strings.length; }
+            public String getElementAt(int i) { return strings[i]; }
+        });
         jScrollPane2.setViewportView(shoppingListView);
 
         jLabel2.setText("The Fridge");
 
-        jLabel3.setText("The Shopping List");
+        shoppingLabel.setText("The Shopping List");
 
         jLabel9.setText("Meal Plan Name:");
 
         mealPlanShoppingList.setText("jTextField1");
 
-        jButton1.setText("Generate");
+        generateShoppingList.setText("Generate");
+        generateShoppingList.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                generateShoppingListActionPerformed(evt);
+            }
+        });
+
+        moveToFridgeButton.setText("<<<");
+        moveToFridgeButton.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                moveToFridgeButtonActionPerformed(evt);
+            }
+        });
+
+        deleteFromFridgeButton.setText(">>>");
+        deleteFromFridgeButton.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                deleteFromFridgeButtonActionPerformed(evt);
+            }
+        });
 
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
         jPanel1.setLayout(jPanel1Layout);
@@ -213,10 +239,14 @@ public class RecipeFrame extends javax.swing.JFrame {
                             .addGroup(jPanel1Layout.createSequentialGroup()
                                 .addComponent(jLabel2)
                                 .addGap(251, 251, 251)
-                                .addComponent(jLabel3))
+                                .addComponent(shoppingLabel))
                             .addGroup(jPanel1Layout.createSequentialGroup()
                                 .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 239, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addGap(52, 52, 52)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                    .addComponent(moveToFridgeButton)
+                                    .addComponent(deleteFromFridgeButton))
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                                 .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 242, javax.swing.GroupLayout.PREFERRED_SIZE))))
                     .addGroup(jPanel1Layout.createSequentialGroup()
                         .addGap(72, 72, 72)
@@ -224,41 +254,48 @@ public class RecipeFrame extends javax.swing.JFrame {
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                         .addComponent(mealPlanShoppingList, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addGap(133, 133, 133)
-                        .addComponent(jButton1)))
-                .addContainerGap(20, Short.MAX_VALUE))
+                        .addComponent(generateShoppingList)))
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
         jPanel1Layout.setVerticalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel1Layout.createSequentialGroup()
-                .addContainerGap()
-                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jLabel2)
-                    .addComponent(jLabel3))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                    .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 352, Short.MAX_VALUE)
-                    .addComponent(jScrollPane2))
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(jPanel1Layout.createSequentialGroup()
+                        .addContainerGap()
+                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                            .addComponent(jLabel2)
+                            .addComponent(shoppingLabel))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                            .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 352, Short.MAX_VALUE)
+                            .addComponent(jScrollPane2)))
+                    .addGroup(jPanel1Layout.createSequentialGroup()
+                        .addGap(41, 41, 41)
+                        .addComponent(moveToFridgeButton)
+                        .addGap(18, 18, 18)
+                        .addComponent(deleteFromFridgeButton)))
                 .addGap(27, 27, 27)
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel9)
                     .addComponent(mealPlanShoppingList, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jButton1))
+                    .addComponent(generateShoppingList))
                 .addContainerGap(38, Short.MAX_VALUE))
         );
 
         ManagerSheet.addTab("Fridge", jPanel1);
 
         DayOfWeekDropMenu.setFont(new java.awt.Font("Times New Roman", 0, 12)); // NOI18N
-        DayOfWeekDropMenu.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "Monday", "Tuesday", "Wensday", "Thursday", "Friday", "Saturday", "Sunday" }));
+        DayOfWeekDropMenu.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Monday", "Tuesday", "Wensday", "Thursday", "Friday", "Saturday", "Sunday" }));
 
         jLabel5.setFont(new java.awt.Font("Times New Roman", 1, 12)); // NOI18N
         jLabel5.setText("Recipe Selection List");
         jLabel5.setToolTipText("");
 
-        jList1.setModel(new javax.swing.AbstractListModel() {
+        jList1.setModel(new javax.swing.AbstractListModel<String>() {
             String[] strings = { "Item 1", "Item 2", "Item 3", "Item 4", "Item 5" };
             public int getSize() { return strings.length; }
-            public Object getElementAt(int i) { return strings[i]; }
+            public String getElementAt(int i) { return strings[i]; }
         });
         recipeSelectionListView.setViewportView(jList1);
 
@@ -421,6 +458,7 @@ public class RecipeFrame extends javax.swing.JFrame {
         mealsGroup.add(radioLunch);
         radioLunch.setFont(new java.awt.Font("Times New Roman", 1, 14)); // NOI18N
         radioLunch.setText("Lunch");
+        radioLunch.setActionCommand("radioLunch");
         radioLunch.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 radioLunchActionPerformed(evt);
@@ -431,6 +469,7 @@ public class RecipeFrame extends javax.swing.JFrame {
         radioDinner.setFont(new java.awt.Font("Times New Roman", 1, 14)); // NOI18N
         radioDinner.setText("Dinner");
         radioDinner.setToolTipText("");
+        radioDinner.setActionCommand("radioDinner");
         radioDinner.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 radioDinnerActionPerformed(evt);
@@ -443,7 +482,7 @@ public class RecipeFrame extends javax.swing.JFrame {
         jLabel4.setToolTipText("");
 
         daysBox.setFont(new java.awt.Font("Times New Roman", 0, 12)); // NOI18N
-        daysBox.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday" }));
+        daysBox.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday" }));
 
         applyButton.setText("Apply");
         applyButton.addActionListener(new java.awt.event.ActionListener() {
@@ -823,19 +862,19 @@ public class RecipeFrame extends javax.swing.JFrame {
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
-    /*TALK WITH BRIAN ABOUT VARIABLE NAME ERRORS
-    private void inititializeFridgeTab() {
+    
+    private void inititializeFridgeTab(Ingredient [] i) {
         
         ingredientsModel = new DefaultListModel();
         fridgeModel = new DefaultListModel();
         
         shoppingLabel.setText("Ingredients List");
         //get ingredients in database
-        Ingredient[] currentIngredients = DatabaseHandler.getIngredients();
-        String[] values = new String[] {"Pizza", "MashedPotatoes", "Chicken", "Ramen noodles", "Guano", "Hot Hoggies", "Toaster Stroodle"};
+        //Ingredient[] currentIngredients = DatabaseHandler.getIngredients();
+        //String[] values = new String[] {"Pizza", "MashedPotatoes", "Chicken", "Ramen noodles", "Guano", "Hot Hoggies", "Toaster Stroodle"};
         //add ingredients to the model list
-        for(int i = 0; i < values.length; i++){
-            ingredientsModel.addElement(values[i]);//currentIngredients[i].getName()
+        for(int j = 0; j < i.length; j++){
+            ingredientsModel.addElement(i[j].getName());//currentIngredients[i].getName()
         }
         //set the list view to the ingredients model list
         shoppingListView.setModel(ingredientsModel);
@@ -843,7 +882,7 @@ public class RecipeFrame extends javax.swing.JFrame {
         //build fridge
         
     }
-    */
+    
     private void menuItemSaveActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_menuItemSaveActionPerformed
         // TODO add your handling code here:
         
@@ -1072,7 +1111,19 @@ public class RecipeFrame extends javax.swing.JFrame {
         //the string value isn't as expected. Debug to see what their value is
         //NOTE FIXED selectedDay string but can't seem to fix selectedMeal
         String selectedDay = (String)daysBox.getSelectedItem();
-        String selectedMeal = mealsGroup.getSelection().getActionCommand();
+        String selectedMeal = "";
+        switch(mealsGroup.getSelection().getActionCommand()){
+            case "radioBreakfast":
+                selectedMeal = "Breakfast";
+                break;
+            case "radioLunch":
+                selectedMeal = "Lunch";
+                break;
+            case "radioDinner":
+                selectedMeal = "Dinner";
+                break;
+        }
+        //String selectedMeal = mealsGroup.getSelection().getActionCommand();
         String selectedWeekId = weekId.getText();
         MealPlan selectedMealPlan = new MealPlan(selectedWeekId,selectedMeal, selectedDay);
         foundRecipes = DatabaseHandler.searchMealPlans(selectedMealPlan);
@@ -1083,55 +1134,12 @@ public class RecipeFrame extends javax.swing.JFrame {
       
         recipeList.setModel(listModel);
     }//GEN-LAST:event_applyButtonActionPerformed
-    /*
-    
-    TODO TALK WITH BRIAN ABOUT VARIABLE NAME ERRORS
-    
-    private void addToFridgebtnActionPerformed(java.awt.event.ActionEvent evt) {                                               
-
-        //add selected ingredient value and add to fridge list model
-        
-        if(fridgeModel.indexOf(shoppingListView.getSelectedValue()) == -1){
-            fridgeModel.addElement(shoppingListView.getSelectedValue());
-        }
-        
-        fridgeListView.setModel(fridgeModel);
-    }                                              
-
-    private void takeFromFridgebtnActionPerformed(java.awt.event.ActionEvent evt) {                                                  
-        // TODO add your handling code here:
-        if(fridgeListView.getSelectedIndex() != -1){
-            fridgeModel.removeElementAt(fridgeListView.getSelectedIndex());
-            fridgeListView.setModel(fridgeModel); 
-        }else {
-            //do nothing cannot, delete from empty list
-            return;
-        }
-    }                                                 
+                                          
 
     private void generateShopListbtnActionPerformed(java.awt.event.ActionEvent evt) {                                                    
-        // TODO add your handling code here:
-        shoppingListModel = new DefaultListModel();
-        //example salad week
-        mealPlanShoppingList.getText();
-        //there will be some other array data here, just for debugging purposes so I can write the code
-        Ingredient[] currentIngredients = DatabaseHandler.getIngredients();
-        //query to get ingredients associated with salad week
-        int i = 0;
-        //compare
-        while(i < currentIngredients.length){
-           if(fridgeListView.getSelectedValuesList().indexOf(currentIngredients[i]) == -1) {
-               shoppingListModel.addElement(currentIngredients[i]);
-           }
-           
-           i++;
-        }
         
-        shoppingLabel.setText("The Shopping List");
-        //set generated list
-        shoppingListView.setModel(shoppingListModel);
     }                                                   
-    */
+    
     private void SearchGoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_SearchGoActionPerformed
         // TODO add your handling code here:
         //Take the input from textfield
@@ -1152,6 +1160,68 @@ public class RecipeFrame extends javax.swing.JFrame {
         searchResultList.setModel(resultListModel);
         searchResultsPane.setVisible(true);
     }//GEN-LAST:event_SearchGoActionPerformed
+
+    private void deleteFromFridgeButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_deleteFromFridgeButtonActionPerformed
+        // TODO add your handling code here:
+        // TODO add your handling code here:
+        if(fridgeListView.getSelectedIndex() != -1){
+            fridgeModel.removeElementAt(fridgeListView.getSelectedIndex());
+            fridgeListView.setModel(fridgeModel); 
+        }else {
+            //do nothing cannot, delete from empty list
+            return;
+        }
+    }//GEN-LAST:event_deleteFromFridgeButtonActionPerformed
+
+    private void moveToFridgeButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_moveToFridgeButtonActionPerformed
+        // TODO add your handling code here:
+         //add selected ingredient value and add to fridge list model
+        
+        if(fridgeModel.indexOf(shoppingListView.getSelectedValue()) == -1){
+            fridgeModel.addElement(shoppingListView.getSelectedValue());
+        }
+        
+        fridgeListView.setModel(fridgeModel);
+    }//GEN-LAST:event_moveToFridgeButtonActionPerformed
+
+    private void generateShoppingListActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_generateShoppingListActionPerformed
+        // TODO add your handling code here:
+        // TODO add your handling code here:
+        shoppingListModel = new DefaultListModel();
+        //example salad week       
+        //there will be some other array data here, just for debugging purposes so I can write the code
+        Ingredient[] neededIngredients = DatabaseHandler.getShoppingNeededIngredients(mealPlanShoppingList.getText());
+        //query to get ingredients associated with salad week
+        int i = 0;
+        
+        int fridgeMax = fridgeModel.getSize();
+        //compare
+        for(int j=0; j<neededIngredients.length;j++){
+            boolean check = false;
+            for(int k=0; k<fridgeMax;k++){                
+                if(fridgeModel.get(k)!=neededIngredients[j].getName()){
+                    check = true;
+                }
+                else{
+                    check = false;
+                    break;
+                }
+            }
+            if(check){
+                int s = shoppingListModel.getSize();
+                boolean dupCheck = false;
+                for(int k=0;k<s;k++){
+                    if(shoppingListModel.get(k)==neededIngredients[i].getName())
+                        dupCheck = true;                
+                }
+                if(dupCheck==false)
+                    shoppingListModel.addElement(neededIngredients[i].getName());
+            }
+        }                                
+        shoppingLabel.setText("The Shopping List");
+        //set generated list
+        shoppingListView.setModel(shoppingListModel);
+    }//GEN-LAST:event_generateShoppingListActionPerformed
 
 
     /**
@@ -1209,9 +1279,11 @@ public class RecipeFrame extends javax.swing.JFrame {
     private javax.swing.JTextField dateTextView;
     private javax.swing.JComboBox<String> daysBox;
     private javax.swing.JTextArea debugArea;
+    private javax.swing.JButton deleteFromFridgeButton;
     private javax.swing.JCheckBox dinnerPlannerCheckbox;
     private javax.swing.JTextField dinnerPlannerTextView;
-    private javax.swing.JTextArea fridgeListView;
+    private javax.swing.JList<String> fridgeListView;
+    private javax.swing.JButton generateShoppingList;
     private javax.swing.JTextField ingredientCal;
     private javax.swing.JTextField ingredientFat;
     private javax.swing.JLabel ingredientFatlab;
@@ -1221,7 +1293,6 @@ public class RecipeFrame extends javax.swing.JFrame {
     private javax.swing.JLabel ingredientProteinlab;
     private javax.swing.JTextField ingredientSodium;
     private javax.swing.JTextField ingredientSugar;
-    private javax.swing.JButton jButton1;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel10;
     private javax.swing.JLabel jLabel14;
@@ -1232,7 +1303,6 @@ public class RecipeFrame extends javax.swing.JFrame {
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel20;
     private javax.swing.JLabel jLabel22;
-    private javax.swing.JLabel jLabel3;
     private javax.swing.JLabel jLabel4;
     private javax.swing.JLabel jLabel5;
     private javax.swing.JLabel jLabel6;
@@ -1262,6 +1332,7 @@ public class RecipeFrame extends javax.swing.JFrame {
     private javax.swing.JMenuItem menuItemLoad;
     private javax.swing.JMenuItem menuItemSave;
     private javax.swing.JButton moveFromList;
+    private javax.swing.JButton moveToFridgeButton;
     private javax.swing.JRadioButton radioBreakfast;
     private javax.swing.JRadioButton radioDinner;
     private javax.swing.JRadioButton radioLunch;
@@ -1271,7 +1342,8 @@ public class RecipeFrame extends javax.swing.JFrame {
     private javax.swing.JScrollPane recipeSelectionListView;
     private javax.swing.JList<String> searchResultList;
     private javax.swing.JPanel searchResultsPane;
-    private javax.swing.JTextArea shoppingListView;
+    private javax.swing.JLabel shoppingLabel;
+    private javax.swing.JList<String> shoppingListView;
     private javax.swing.JButton storeRecipe;
     private javax.swing.JTextField weekID;
     private javax.swing.JTextField weekId;
