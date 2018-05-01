@@ -1068,11 +1068,14 @@ public class RecipeFrame extends javax.swing.JFrame {
     }//GEN-LAST:event_StoreButtonActionPerformed
   
     private void applyButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_applyButtonActionPerformed
-        String selectedDay = daysBox.getActionCommand();
+        //selectedDay and selectedMeal are not being set propperly
+        //the string value isn't as expected. Debug to see what their value is
+        //NOTE FIXED selectedDay string but can't seem to fix selectedMeal
+        String selectedDay = (String)daysBox.getSelectedItem();
         String selectedMeal = mealsGroup.getSelection().getActionCommand();
         String selectedWeekId = weekId.getText();
-        //MealPlan selectedMealPlan = new MealPlan(selectedWeekId,selectedMeal, selectedDay);
-        //foundRecipes = DatabaseHandler.searchMealPlans(selectedMealPlan);
+        MealPlan selectedMealPlan = new MealPlan(selectedWeekId,selectedMeal, selectedDay);
+        foundRecipes = DatabaseHandler.searchMealPlans(selectedMealPlan);
         DefaultListModel listModel = new DefaultListModel();
         for(Recipe r : foundRecipes){
             listModel.addElement(r.getName());
