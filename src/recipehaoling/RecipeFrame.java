@@ -77,7 +77,7 @@ public class RecipeFrame extends javax.swing.JFrame {
 
         mealsGroup = new javax.swing.ButtonGroup();
         jLabel1 = new javax.swing.JLabel();
-        RecipeSearchText = new javax.swing.JTextField();
+        recipeSearchText = new javax.swing.JTextField();
         SearchGo = new javax.swing.JButton();
         ManagerSheet = new javax.swing.JTabbedPane();
         jPanel1 = new javax.swing.JPanel();
@@ -146,8 +146,8 @@ public class RecipeFrame extends javax.swing.JFrame {
         jLabel22 = new javax.swing.JLabel();
         addIngredient = new javax.swing.JButton();
         searchResultsPane = new javax.swing.JPanel();
-        jScrollPane4 = new javax.swing.JScrollPane();
-        searchResultsView = new javax.swing.JTextArea();
+        jScrollPane5 = new javax.swing.JScrollPane();
+        searchResultList = new javax.swing.JList<>();
         dateLabel = new javax.swing.JLabel();
         dateTextView = new javax.swing.JTextField();
         jScrollPane7 = new javax.swing.JScrollPane();
@@ -165,10 +165,15 @@ public class RecipeFrame extends javax.swing.JFrame {
         jLabel1.setText("Search Recipe Category");
         jLabel1.setToolTipText("");
 
-        RecipeSearchText.setFont(new java.awt.Font("Times New Roman", 0, 12)); // NOI18N
+        recipeSearchText.setFont(new java.awt.Font("Times New Roman", 0, 12)); // NOI18N
 
         SearchGo.setFont(new java.awt.Font("Times New Roman", 0, 12)); // NOI18N
         SearchGo.setText("Go");
+        SearchGo.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                SearchGoActionPerformed(evt);
+            }
+        });
 
         fridgeListView.setEditable(false);
         fridgeListView.setColumns(20);
@@ -685,21 +690,19 @@ public class RecipeFrame extends javax.swing.JFrame {
 
         ManagerSheet.addTab("Add Recipe", addRecipePanel);
 
-        searchResultsView.setEditable(false);
-        searchResultsView.setColumns(20);
-        searchResultsView.setFont(new java.awt.Font("Times New Roman", 0, 14)); // NOI18N
-        searchResultsView.setRows(5);
-        jScrollPane4.setViewportView(searchResultsView);
+        jScrollPane5.setViewportView(searchResultList);
 
         javax.swing.GroupLayout searchResultsPaneLayout = new javax.swing.GroupLayout(searchResultsPane);
         searchResultsPane.setLayout(searchResultsPaneLayout);
         searchResultsPaneLayout.setHorizontalGroup(
             searchResultsPaneLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(jScrollPane4)
+            .addComponent(jScrollPane5)
         );
         searchResultsPaneLayout.setVerticalGroup(
             searchResultsPaneLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(jScrollPane4, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, 125, Short.MAX_VALUE)
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, searchResultsPaneLayout.createSequentialGroup()
+                .addGap(0, 0, Short.MAX_VALUE)
+                .addComponent(jScrollPane5, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
         );
 
         dateLabel.setFont(new java.awt.Font("Times New Roman", 1, 14)); // NOI18N
@@ -765,7 +768,7 @@ public class RecipeFrame extends javax.swing.JFrame {
                             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
                                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                                     .addGroup(layout.createSequentialGroup()
-                                        .addComponent(RecipeSearchText, javax.swing.GroupLayout.DEFAULT_SIZE, 353, Short.MAX_VALUE)
+                                        .addComponent(recipeSearchText, javax.swing.GroupLayout.DEFAULT_SIZE, 353, Short.MAX_VALUE)
                                         .addGap(2, 2, 2))
                                     .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
                                         .addGap(0, 0, Short.MAX_VALUE)
@@ -795,7 +798,7 @@ public class RecipeFrame extends javax.swing.JFrame {
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                             .addComponent(SearchGo, javax.swing.GroupLayout.DEFAULT_SIZE, 31, Short.MAX_VALUE)
-                            .addComponent(RecipeSearchText))
+                            .addComponent(recipeSearchText))
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                         .addComponent(searchResultsPane, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addGap(21, 21, 21)
@@ -844,7 +847,7 @@ public class RecipeFrame extends javax.swing.JFrame {
         // TODO add your handling code here:
         ArrayList recipeSearchList = new ArrayList();
         //collect recipe objects
-        recipeSearchList.add(DatabaseHandler.searchRecipes(RecipeSearchText.getText()));
+        recipeSearchList.add(DatabaseHandler.searchRecipes(recipeSearchText.getText()));
         
         //model = new ListModel();
         
@@ -1045,6 +1048,24 @@ public class RecipeFrame extends javax.swing.JFrame {
         recipeList.setModel(listModel);
     }//GEN-LAST:event_applyButtonActionPerformed
 
+    private void SearchGoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_SearchGoActionPerformed
+        // TODO add your handling code here:
+        //Take the input from textfield
+        String queryInput = recipeSearchText.getText();
+        
+        //Pass the input into a search function
+        //Recipe[] resultList = someFunction();
+        
+        //Use the search result array to populate the list item
+        DefaultListModel resultListModel = new DefaultListModel();
+        /*for(int i = 0; i < resultList.length; i++){
+            resultListModel.addElement(resultList[i]);
+        }*/
+        
+        //display the search result
+        //searchResultList.setModel(resultListModel);
+    }//GEN-LAST:event_SearchGoActionPerformed
+
 
     /**
      * @param args the command line arguments
@@ -1086,7 +1107,6 @@ public class RecipeFrame extends javax.swing.JFrame {
     private javax.swing.JComboBox<String> DayOfWeekDropMenu;
     private javax.swing.JLabel InstructionsLabel;
     private javax.swing.JTabbedPane ManagerSheet;
-    private javax.swing.JTextField RecipeSearchText;
     private javax.swing.JButton SearchGo;
     private javax.swing.JButton StoreButton;
     private javax.swing.JButton addIngredient;
@@ -1142,7 +1162,7 @@ public class RecipeFrame extends javax.swing.JFrame {
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JScrollPane jScrollPane2;
     private javax.swing.JScrollPane jScrollPane3;
-    private javax.swing.JScrollPane jScrollPane4;
+    private javax.swing.JScrollPane jScrollPane5;
     private javax.swing.JScrollPane jScrollPane6;
     private javax.swing.JScrollPane jScrollPane7;
     private javax.swing.JScrollPane jScrollPane8;
@@ -1159,9 +1179,10 @@ public class RecipeFrame extends javax.swing.JFrame {
     private javax.swing.JRadioButton radioLunch;
     private javax.swing.JTextArea recipeInstruc;
     private javax.swing.JList<String> recipeList;
+    private javax.swing.JTextField recipeSearchText;
     private javax.swing.JScrollPane recipeSelectionListView;
+    private javax.swing.JList<String> searchResultList;
     private javax.swing.JPanel searchResultsPane;
-    private javax.swing.JTextArea searchResultsView;
     private javax.swing.JTextArea shoppingListView;
     private javax.swing.JButton storeRecipe;
     private javax.swing.JTextField weekID;
