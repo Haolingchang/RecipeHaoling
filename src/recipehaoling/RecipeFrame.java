@@ -98,6 +98,7 @@ public class RecipeFrame extends javax.swing.JFrame {
         generateShoppingList = new javax.swing.JButton();
         moveToFridgeButton = new javax.swing.JButton();
         deleteFromFridgeButton = new javax.swing.JButton();
+        RefreshBtn = new javax.swing.JButton();
         jPanel2 = new javax.swing.JPanel();
         DayOfWeekDropMenu = new javax.swing.JComboBox<>();
         jPanel4 = new javax.swing.JPanel();
@@ -159,9 +160,6 @@ public class RecipeFrame extends javax.swing.JFrame {
         searchResultList = new javax.swing.JList<>();
         dateLabel = new javax.swing.JLabel();
         dateTextView = new javax.swing.JTextField();
-        jScrollPane7 = new javax.swing.JScrollPane();
-        debugArea = new javax.swing.JTextArea();
-        jLabel7 = new javax.swing.JLabel();
         jMenuBar1 = new javax.swing.JMenuBar();
         jMenu1 = new javax.swing.JMenu();
         menuItemSave = new javax.swing.JMenuItem();
@@ -184,11 +182,6 @@ public class RecipeFrame extends javax.swing.JFrame {
             }
         });
 
-        fridgeListView.setModel(new javax.swing.AbstractListModel<String>() {
-            String[] strings = { "Item 1", "Item 2", "Item 3", "Item 4", "Item 5" };
-            public int getSize() { return strings.length; }
-            public String getElementAt(int i) { return strings[i]; }
-        });
         jScrollPane1.setViewportView(fridgeListView);
 
         shoppingListView.setModel(new javax.swing.AbstractListModel<String>() {
@@ -204,7 +197,7 @@ public class RecipeFrame extends javax.swing.JFrame {
 
         jLabel9.setText("Meal Plan Name:");
 
-        mealPlanShoppingList.setText("jTextField1");
+        mealPlanShoppingList.setToolTipText("Enter Meal Plan Name");
 
         generateShoppingList.setText("Generate");
         generateShoppingList.addActionListener(new java.awt.event.ActionListener() {
@@ -227,35 +220,43 @@ public class RecipeFrame extends javax.swing.JFrame {
             }
         });
 
+        RefreshBtn.setText("Refresh");
+        RefreshBtn.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                RefreshBtnActionPerformed(evt);
+            }
+        });
+
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
         jPanel1.setLayout(jPanel1Layout);
         jPanel1Layout.setHorizontalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel1Layout.createSequentialGroup()
+                .addGap(34, 34, 34)
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(jPanel1Layout.createSequentialGroup()
-                        .addGap(34, 34, 34)
-                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addGroup(jPanel1Layout.createSequentialGroup()
-                                .addComponent(jLabel2)
-                                .addGap(251, 251, 251)
-                                .addComponent(shoppingLabel))
-                            .addGroup(jPanel1Layout.createSequentialGroup()
-                                .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 239, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                    .addComponent(moveToFridgeButton)
-                                    .addComponent(deleteFromFridgeButton))
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 242, javax.swing.GroupLayout.PREFERRED_SIZE))))
+                        .addComponent(jLabel2)
+                        .addGap(251, 251, 251)
+                        .addComponent(shoppingLabel))
                     .addGroup(jPanel1Layout.createSequentialGroup()
-                        .addGap(72, 72, 72)
-                        .addComponent(jLabel9)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                        .addComponent(mealPlanShoppingList, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(133, 133, 133)
-                        .addComponent(generateShoppingList)))
+                        .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 239, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(moveToFridgeButton)
+                            .addComponent(deleteFromFridgeButton))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 242, javax.swing.GroupLayout.PREFERRED_SIZE)))
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+            .addGroup(jPanel1Layout.createSequentialGroup()
+                .addGap(72, 72, 72)
+                .addComponent(jLabel9)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(mealPlanShoppingList, javax.swing.GroupLayout.PREFERRED_SIZE, 116, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(133, 133, 133)
+                .addComponent(generateShoppingList)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addComponent(RefreshBtn)
+                .addGap(32, 32, 32))
         );
         jPanel1Layout.setVerticalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -279,7 +280,8 @@ public class RecipeFrame extends javax.swing.JFrame {
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel9)
                     .addComponent(mealPlanShoppingList, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(generateShoppingList))
+                    .addComponent(generateShoppingList)
+                    .addComponent(RefreshBtn))
                 .addContainerGap(38, Short.MAX_VALUE))
         );
 
@@ -763,12 +765,6 @@ public class RecipeFrame extends javax.swing.JFrame {
         dateTextView.setFont(new java.awt.Font("Times New Roman", 1, 14)); // NOI18N
         dateTextView.setToolTipText("");
 
-        debugArea.setColumns(20);
-        debugArea.setRows(5);
-        jScrollPane7.setViewportView(debugArea);
-
-        jLabel7.setText("Debugging area:");
-
         jMenu1.setText("File");
 
         menuItemSave.setText("Save");
@@ -826,11 +822,7 @@ public class RecipeFrame extends javax.swing.JFrame {
                                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)))
                                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                                     .addComponent(SearchGo)
-                                    .addComponent(dateTextView, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                            .addComponent(jScrollPane7)
-                            .addGroup(layout.createSequentialGroup()
-                                .addComponent(jLabel7)
-                                .addGap(0, 0, Short.MAX_VALUE)))
+                                    .addComponent(dateTextView, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))))
                         .addContainerGap())))
         );
         layout.setVerticalGroup(
@@ -850,11 +842,7 @@ public class RecipeFrame extends javax.swing.JFrame {
                             .addComponent(SearchGo, javax.swing.GroupLayout.DEFAULT_SIZE, 31, Short.MAX_VALUE)
                             .addComponent(recipeSearchText))
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                        .addComponent(searchResultsPane, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(21, 21, 21)
-                        .addComponent(jLabel7)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(jScrollPane7, javax.swing.GroupLayout.PREFERRED_SIZE, 239, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                        .addComponent(searchResultsPane, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
                 .addContainerGap(33, Short.MAX_VALUE))
         );
 
@@ -865,9 +853,9 @@ public class RecipeFrame extends javax.swing.JFrame {
     
     private void inititializeFridgeTab(Ingredient [] i) {
         
-        ingredientsModel = new DefaultListModel();
-        fridgeModel = new DefaultListModel();
         
+        fridgeModel = new DefaultListModel();
+        ingredientsModel = new DefaultListModel();
         shoppingLabel.setText("Ingredients List");
         //get ingredients in database
         //Ingredient[] currentIngredients = DatabaseHandler.getIngredients();
@@ -959,7 +947,7 @@ public class RecipeFrame extends javax.swing.JFrame {
         JOptionPane.showMessageDialog(null, ingredientName.getText() + " is added!");
         
         //Debug Code!!! Delete it in Final Code
-        debugArea.setText(debugArea.getText() + "\n" + ingredientName.getText()+ " contains: " + ingredientCal.getText() + " calories!");
+       // debugArea.setText(debugArea.getText() + "\n" + ingredientName.getText()+ " contains: " + ingredientCal.getText() + " calories!");
 
         //clear the textfield for entering new ingredients
         ingredientName.setText("");
@@ -1001,6 +989,7 @@ public class RecipeFrame extends javax.swing.JFrame {
         addRecipeInstructions.setText("");
         addRecipeName.setText("");
         //add refresh method call here
+        model.addElement(recipe.getName());
     }//GEN-LAST:event_storeRecipeActionPerformed
 
     private void radioDinnerActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_radioDinnerActionPerformed
@@ -1192,36 +1181,63 @@ public class RecipeFrame extends javax.swing.JFrame {
         //there will be some other array data here, just for debugging purposes so I can write the code
         Ingredient[] neededIngredients = DatabaseHandler.getShoppingNeededIngredients(mealPlanShoppingList.getText());
         //query to get ingredients associated with salad week
-        int i = 0;
+       
         
         int fridgeMax = fridgeModel.getSize();
         //compare
+        
         for(int j=0; j<neededIngredients.length;j++){
             boolean check = false;
-            for(int k=0; k<fridgeMax;k++){                
-                if(fridgeModel.get(k)!=neededIngredients[j].getName()){
-                    check = true;
-                }
-                else{
-                    check = false;
-                    break;
+            if(fridgeMax == 0){
+                check = true;
+            }
+            else{
+                for(int k=0; k<fridgeMax;k++){                
+                    if(fridgeModel.get(k)!=neededIngredients[j].getName()){
+                        check = true;
+                    }
+                    else{
+                        check = false;
+                        break;
+                    }
                 }
             }
             if(check){
                 int s = shoppingListModel.getSize();
                 boolean dupCheck = false;
                 for(int k=0;k<s;k++){
-                    if(shoppingListModel.get(k)==neededIngredients[i].getName())
+                    if(shoppingListModel.get(k)==neededIngredients[j].getName())
                         dupCheck = true;                
                 }
-                if(dupCheck==false)
-                    shoppingListModel.addElement(neededIngredients[i].getName());
-            }
-        }                                
+                if(dupCheck==false){
+                    shoppingListModel.addElement(neededIngredients[j].getName());
+                    break;
+                }
+                
+            }           
+        } 
+        
         shoppingLabel.setText("The Shopping List");
         //set generated list
         shoppingListView.setModel(shoppingListModel);
     }//GEN-LAST:event_generateShoppingListActionPerformed
+
+    private void RefreshBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_RefreshBtnActionPerformed
+        // TODO add your handling code here:
+ 
+        Ingredient[] i = DatabaseHandler.getIngredients();
+        ingredientsModel = new DefaultListModel();
+        shoppingLabel.setText("Ingredients List");
+        //get ingredients in database
+        //Ingredient[] currentIngredients = DatabaseHandler.getIngredients();
+        //String[] values = new String[] {"Pizza", "MashedPotatoes", "Chicken", "Ramen noodles", "Guano", "Hot Hoggies", "Toaster Stroodle"};
+        //add ingredients to the model list
+        for(int j = 0; j < i.length; j++){
+            ingredientsModel.addElement(i[j].getName());//currentIngredients[i].getName()
+        }
+        //set the list view to the ingredients model list
+        shoppingListView.setModel(ingredientsModel);
+    }//GEN-LAST:event_RefreshBtnActionPerformed
 
 
     /**
@@ -1264,6 +1280,7 @@ public class RecipeFrame extends javax.swing.JFrame {
     private javax.swing.JComboBox<String> DayOfWeekDropMenu;
     private javax.swing.JLabel InstructionsLabel;
     private javax.swing.JTabbedPane ManagerSheet;
+    private javax.swing.JButton RefreshBtn;
     private javax.swing.JButton SearchGo;
     private javax.swing.JButton StoreButton;
     private javax.swing.JButton addIngredient;
@@ -1278,7 +1295,6 @@ public class RecipeFrame extends javax.swing.JFrame {
     private javax.swing.JLabel dateLabel;
     private javax.swing.JTextField dateTextView;
     private javax.swing.JComboBox<String> daysBox;
-    private javax.swing.JTextArea debugArea;
     private javax.swing.JButton deleteFromFridgeButton;
     private javax.swing.JCheckBox dinnerPlannerCheckbox;
     private javax.swing.JTextField dinnerPlannerTextView;
@@ -1306,7 +1322,6 @@ public class RecipeFrame extends javax.swing.JFrame {
     private javax.swing.JLabel jLabel4;
     private javax.swing.JLabel jLabel5;
     private javax.swing.JLabel jLabel6;
-    private javax.swing.JLabel jLabel7;
     private javax.swing.JLabel jLabel8;
     private javax.swing.JLabel jLabel9;
     private javax.swing.JList<String> jList1;
@@ -1322,7 +1337,6 @@ public class RecipeFrame extends javax.swing.JFrame {
     private javax.swing.JScrollPane jScrollPane3;
     private javax.swing.JScrollPane jScrollPane5;
     private javax.swing.JScrollPane jScrollPane6;
-    private javax.swing.JScrollPane jScrollPane7;
     private javax.swing.JScrollPane jScrollPane8;
     private javax.swing.JCheckBox lunchPlannerCheckbox;
     private javax.swing.JTextField lunchPlannerTextView;

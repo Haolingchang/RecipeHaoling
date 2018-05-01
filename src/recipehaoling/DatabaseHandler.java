@@ -428,11 +428,11 @@ public class DatabaseHandler {
         try
         {
             //grabbing all rows from the recipe table
-            String sqlStatement = "SELECT * FROM MealPlanRecipe where MealID =? and Meal =?";            
+            String sqlStatement = "SELECT * FROM MealPlanRecipe where MealID =?";            
             pst = (OraclePreparedStatement) conn.prepareStatement(sqlStatement);
             //attach data to prepared statement
             pst.setInt(1, m.getID());
-            pst.setString(2,m.getMeal());
+            
             //will contain the rows from the query
             rs = (OracleResultSet) pst.executeQuery();
             //iterating through each row
@@ -524,11 +524,12 @@ public class DatabaseHandler {
         try
         {
             //grabbing all rows from the recipe table
-            String sqlStatement = "SELECT * FROM MealPlan WHERE DayOfWeek=? and weekID=?";            
+            String sqlStatement = "SELECT * FROM MealPlan WHERE DayOfWeek=? and weekID=? and Meal=?";            
             pst = (OraclePreparedStatement) conn.prepareStatement(sqlStatement);
             //adding data to prepared statement
             pst.setString(1, m.getDay());
             pst.setString(2, m.getWeekID());
+            pst.setString(3, m.getMeal());
             //will contain the rows from the query
             rs = (OracleResultSet) pst.executeQuery();
             //iterating through each row
@@ -587,13 +588,13 @@ public class DatabaseHandler {
         try
         {           
             //creating the sql statement to insert the mealplanrecipe to the database
-            String sqlStatement = "insert into MealPlanRecipe values ( ? , ? , ?)";            
+            String sqlStatement = "insert into MealPlanRecipe values ( ? , ?)";            
 
             pst = (OraclePreparedStatement) conn.prepareStatement(sqlStatement);            
             //attaching the data to the statement           
             pst.setInt(1, r.getID());
             pst.setInt(2, m.getID());
-            pst.setString(3, m.getMeal());
+            
             //inserting into the database
             pst.execute();                                    
         }
@@ -622,12 +623,13 @@ public class DatabaseHandler {
         try
         {           
             //creating the sql statement to insert the mealplan to the database
-            String sqlStatement = "insert into MealPlan values (seq_mealplan.nextval, ?, ?)";            
+            String sqlStatement = "insert into MealPlan values (seq_mealplan.nextval, ?, ?, ?)";            
 
             pst = (OraclePreparedStatement) conn.prepareStatement(sqlStatement);            
             //attaching the data to the statement           
             pst.setString(1, m.getDay());
             pst.setString(2,m.getWeekID());
+            pst.setString(3, m.getMeal());
             
             //inserting into the database
             pst.execute();                                    
