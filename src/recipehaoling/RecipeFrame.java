@@ -30,9 +30,9 @@ public class RecipeFrame extends javax.swing.JFrame {
     private DefaultListModel model;
     
     //Variables
-    private ArrayList<Ingredient> newIngredients = new ArrayList<>();
+    private ArrayList<Ingredient> newIngredients = new ArrayList<>();  
     Recipe[] foundRecipes;
-    DefaultListModel listModel = new DefaultListModel();
+
        
     public RecipeFrame() {
         initComponents();
@@ -118,7 +118,8 @@ public class RecipeFrame extends javax.swing.JFrame {
         jScrollPane8 = new javax.swing.JScrollPane();
         recipeList = new javax.swing.JList<>();
         jScrollPane3 = new javax.swing.JScrollPane();
-        recipeInstruction = new javax.swing.JTextArea();
+        recipeInstruc = new javax.swing.JTextArea();
+        weekId = new javax.swing.JTextField();
         addRecipePanel = new javax.swing.JPanel();
         jLabel6 = new javax.swing.JLabel();
         addRecipeName = new javax.swing.JTextField();
@@ -442,7 +443,6 @@ public class RecipeFrame extends javax.swing.JFrame {
         });
 
         recipeList.setFont(new java.awt.Font("Times New Roman", 0, 12)); // NOI18N
-        recipeList.setModel(listModel);
         recipeList.addMouseListener(new java.awt.event.MouseAdapter() {
             public void mouseClicked(java.awt.event.MouseEvent evt) {
                 recipeListMouseClicked(evt);
@@ -450,9 +450,9 @@ public class RecipeFrame extends javax.swing.JFrame {
         });
         jScrollPane8.setViewportView(recipeList);
 
-        recipeInstruction.setColumns(20);
-        recipeInstruction.setRows(5);
-        jScrollPane3.setViewportView(recipeInstruction);
+        recipeInstruc.setColumns(20);
+        recipeInstruc.setRows(5);
+        jScrollPane3.setViewportView(recipeInstruc);
 
         javax.swing.GroupLayout jPanel3Layout = new javax.swing.GroupLayout(jPanel3);
         jPanel3.setLayout(jPanel3Layout);
@@ -465,14 +465,16 @@ public class RecipeFrame extends javax.swing.JFrame {
                             .addGroup(javax.swing.GroupLayout.Alignment.LEADING, jPanel3Layout.createSequentialGroup()
                                 .addGap(206, 206, 206)
                                 .addComponent(jLabel4, javax.swing.GroupLayout.PREFERRED_SIZE, 155, javax.swing.GroupLayout.PREFERRED_SIZE))
-                            .addGroup(javax.swing.GroupLayout.Alignment.LEADING, jPanel3Layout.createSequentialGroup()
-                                .addGap(81, 81, 81)
+                            .addGroup(jPanel3Layout.createSequentialGroup()
+                                .addGap(32, 32, 32)
+                                .addComponent(weekId)
+                                .addGap(18, 18, 18)
                                 .addComponent(radioBreakfast)
                                 .addGap(18, 18, 18)
                                 .addComponent(radioLunch)
                                 .addGap(18, 18, 18)
                                 .addComponent(radioDinner)))
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addGap(18, 18, 18)
                         .addComponent(daysBox, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                     .addGroup(jPanel3Layout.createSequentialGroup()
                         .addGap(425, 425, 425)
@@ -490,12 +492,12 @@ public class RecipeFrame extends javax.swing.JFrame {
                 .addContainerGap()
                 .addComponent(jLabel4, javax.swing.GroupLayout.PREFERRED_SIZE, 27, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(daysBox, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                        .addComponent(radioBreakfast)
-                        .addComponent(radioLunch)
-                        .addComponent(radioDinner)))
+                .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(daysBox, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(radioDinner)
+                    .addComponent(radioLunch)
+                    .addComponent(radioBreakfast)
+                    .addComponent(weekId, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addGap(18, 18, 18)
                 .addComponent(applyButton)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
@@ -838,7 +840,7 @@ public class RecipeFrame extends javax.swing.JFrame {
             dinnerPlannerTextView.setText("");
         }
     }//GEN-LAST:event_DayOfWeekDropMenuActionPerformed
-     private void searchActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_searchActionPerformed
+     private void searchActionPerformed(java.awt.event.ActionEvent evt) {                                       
         // TODO add your handling code here:
         ArrayList recipeSearchList = new ArrayList();
         //collect recipe objects
@@ -941,8 +943,8 @@ public class RecipeFrame extends javax.swing.JFrame {
     private void recipeListMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_recipeListMouseClicked
         String selectedRecipeName = recipeList.getSelectedValue();
         for(Recipe r : foundRecipes){
-            if(r.name.equals(selectedRecipeName)){
-                recipeInstruction.setText(r.instruction);
+            if(r.getName().equals(selectedRecipeName)){
+                recipeInstruc.setText(r.getInstruction());
             }
         }
     }//GEN-LAST:event_recipeListMouseClicked
@@ -1030,15 +1032,17 @@ public class RecipeFrame extends javax.swing.JFrame {
     }//GEN-LAST:event_StoreButtonActionPerformed
   
     private void applyButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_applyButtonActionPerformed
-                String selectedDay = daysBox.getActionCommand();
+        String selectedDay = daysBox.getActionCommand();
         String selectedMeal = mealsGroup.getSelection().getActionCommand();
-        MealPlan selectedMealPlan = new MealPlan(selectedMeal, selectedDay);
-        foundRecipes = DatabaseHandler.searchMealPlans(selectedMealPlan);
-        DefaultListModel funclistModel = new DefaultListModel();
+        String selectedWeekId = weekId.getText();
+        //MealPlan selectedMealPlan = new MealPlan(selectedWeekId,selectedMeal, selectedDay);
+        //foundRecipes = DatabaseHandler.searchMealPlans(selectedMealPlan);
+        DefaultListModel listModel = new DefaultListModel();
         for(Recipe r : foundRecipes){
-            funclistModel.addElement(r.name);
+            listModel.addElement(r.getName());
         }
-        listModel = funclistModel;
+      
+        recipeList.setModel(listModel);
     }//GEN-LAST:event_applyButtonActionPerformed
 
 
@@ -1153,7 +1157,7 @@ public class RecipeFrame extends javax.swing.JFrame {
     private javax.swing.JRadioButton radioBreakfast;
     private javax.swing.JRadioButton radioDinner;
     private javax.swing.JRadioButton radioLunch;
-    private javax.swing.JTextArea recipeInstruction;
+    private javax.swing.JTextArea recipeInstruc;
     private javax.swing.JList<String> recipeList;
     private javax.swing.JScrollPane recipeSelectionListView;
     private javax.swing.JPanel searchResultsPane;
@@ -1161,5 +1165,6 @@ public class RecipeFrame extends javax.swing.JFrame {
     private javax.swing.JTextArea shoppingListView;
     private javax.swing.JButton storeRecipe;
     private javax.swing.JTextField weekID;
+    private javax.swing.JTextField weekId;
     // End of variables declaration//GEN-END:variables
 }
