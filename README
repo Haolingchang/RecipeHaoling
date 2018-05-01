@@ -1,0 +1,39 @@
+MealPlan App Version 1.0. 
+
+Fridge tab
+========================================================================================================
+Fridge Tab shall show all the ingredients in the Fridge, what need to be bought in the shopping list and 
+ingredient list.
+A user can click the <<< button to move shopping list items to fridge list. 
+A user can click the >>> button the remove something from the fridge. 
+A user can enter meal plan name at the bottom left of the Fridge Tab. 
+A user can GENERATE the shopping list base on the meal plan which has been entered. 
+A user can choose to show all the ingredients by clicking Generate Button. 
+
+Planner tab
+========================================================================================================
+Planner Tab shall allow a user to customize meal plan. 
+A user can select recipes from the Recipe Selection List, choose which meal and date the recipes to add to 
+and finish the meal plan creation by entering a meal plan name. 
+A user can clear what has been selected and entered by clicking the Clear button. 
+A user can store the customized meal plan by clicking the Store button. 
+
+Meal Plan tab
+=========================================================================================================
+Enter a name for your meal plan into the Meal Plan name textbox, select either breakfast, luch, or dinner. 
+Choose the week day drop down menu to select the credentials of search for the meal plan of your choice.  
+Click Apply and then view the results. if you click on the search result/plan of choice in the results box
+then the instructions to create your recipe will be displayed.
+=========================================================================================================
+
+Add Recipe tab
+=========================================================================================================
+Enter a name in the Recipe Name textbox, next enter the food group category (i.e meat, dairy, fruit...).
+Enter the name of the ingredients included in the recipe instructions, then enter nutrition facts, click Add.
+Enter the instructions for your chosen recipe and click store.
+=========================================================================================================
+
+Search bar
+=========================================================================================================
+search for a recipe based on categories. Click Go. Results will appear underneath search box.
+=========================================================================================================
