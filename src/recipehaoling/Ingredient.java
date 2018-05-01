@@ -41,8 +41,8 @@ public class Ingredient {
         sugar = s;
     }
     //null constructor
-    Ingredient(){
-        
+    Ingredient(String n){
+        name = n;
     }
     public int getID(){
         return id;       

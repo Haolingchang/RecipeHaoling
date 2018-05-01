@@ -375,10 +375,10 @@ public class DatabaseHandler {
         try
         {
             //grabbing all rows from the recipe table
-            String sqlStatement = "SELECT * FROM Recipe WHERE name=%?%";            
+            String sqlStatement = "SELECT * FROM Recipe WHERE upper(category) Like upper(?)";            
             pst = (OraclePreparedStatement) conn.prepareStatement(sqlStatement);
             //adding data to prepared statement
-            pst.setString(1, search);
+            pst.setString(1, "%"+search+"%");
             //will contain the rows from the query
             rs = (OracleResultSet) pst.executeQuery();
             //iterating through each row
@@ -646,5 +646,166 @@ public class DatabaseHandler {
             DatabaseHandler.close(pst);
             DatabaseHandler.close(conn);
         }
+    }
+    
+    //this method will query the database for all of the ingredients needed for
+    //a specific meal plan. The gui can use this to figure out which ingredients
+    //the user needs.
+    
+    public static Ingredient[] getShoppingNeededIngredients(String weekID){
+        //get array of mealplanIDs with weekID
+        MealPlan[] selectedMealPlans = attachMealPlanID(weekID);
+        //get recipe ids from mealplan recipe table
+        Recipe[] selectedRecipes = attachRecipeID(selectedMealPlans);
+        //get ingredients from recipeIngredient table
+        Ingredient[] selectedIngredients = getIngredientArray(selectedRecipes);
+                
+        //return the array
+        return selectedIngredients;
+        //WITH THE ARRAY WILL NEED TO CHECK AGAINST THE FRIDGE LIST TO KNOW WHAT TO
+        //DISPLAY
+    }
+    //this method works with getShoppingNeededIngredients to attach the mealplan id
+    private static MealPlan[] attachMealPlanID(String weekID){
+        //creating connection to database
+        Connection conn = DatabaseHandler.setupConnection();
+        //preparing oracle objects
+        OraclePreparedStatement pst = null;
+        OracleResultSet rs = null;        
+        //preparing mealplan list
+        List<MealPlan> currentMealPlans = new ArrayList<MealPlan>();
+        try
+        {
+            //grabbing all rows from the recipe table
+            String sqlStatement = "SELECT * FROM MealPlan WHERE  weekID=?";            
+            pst = (OraclePreparedStatement) conn.prepareStatement(sqlStatement);
+            //adding data to prepared statement
+            pst.setString(1, weekID);
+            
+            //will contain the rows from the query
+            rs = (OracleResultSet) pst.executeQuery();
+            //iterating through each row
+            while(rs.next()){
+                //set the mealplan's id
+                int id = rs.getInt("MealID");
+                MealPlan m = new MealPlan(id,weekID);
+                currentMealPlans.add(m);
+            }
+        }
+        catch (Exception e)
+        {
+            //display an error message of what went wrong
+            JOptionPane.showMessageDialog(null, e);
+        }
+        finally
+        {            
+            //close the connections
+            DatabaseHandler.close(rs);
+            DatabaseHandler.close(pst);
+            DatabaseHandler.close(conn);
+        } 
+        MealPlan[] returnedMealPlans = new MealPlan[currentMealPlans.size()];
+        for(int j=0; j<currentMealPlans.size();j++){
+            returnedMealPlans[j] = currentMealPlans.get(j);
+        }
+        //return the mealplan array
+        return returnedMealPlans;
+    }
+    //this method works with getShoppingNeededIngredients to attach the recipeIDs
+    private static Recipe[] attachRecipeID(MealPlan[] m){
+        //creating connection to database
+        Connection conn = DatabaseHandler.setupConnection();
+        //preparing oracle objects
+        OraclePreparedStatement pst = null;
+        OracleResultSet rs = null;        
+        //preparing mealplan list
+        List<Recipe> currentRecipes = new ArrayList<Recipe>();
+        for(int j=0; j<m.length;j++){
+            try
+            {
+                //grabbing all rows from the recipe table
+                String sqlStatement = "SELECT * FROM MealPlanRecipe WHERE  MealID=?";            
+                pst = (OraclePreparedStatement) conn.prepareStatement(sqlStatement);
+                //adding data to prepared statement
+                pst.setInt(1, m[j].getID());
+
+                //will contain the rows from the query
+                rs = (OracleResultSet) pst.executeQuery();
+                //iterating through each row
+                while(rs.next()){
+                    //set the mealplan's id
+                    int id = rs.getInt("RecipeID");
+                    Recipe r = new Recipe (id);
+                    currentRecipes.add(r);
+                }
+            }
+            catch (Exception e)
+            {
+                //display an error message of what went wrong
+                JOptionPane.showMessageDialog(null, e);
+            }
+            finally
+            {            
+
+            }
+        }
+        //close the connections
+        DatabaseHandler.close(rs);
+        DatabaseHandler.close(pst);
+        DatabaseHandler.close(conn);
+        
+        Recipe[] returnedRecipes = new Recipe[currentRecipes.size()];
+        for(int k=0; k<currentRecipes.size();k++){
+            returnedRecipes[k]=currentRecipes.get(k);
+        }
+        return returnedRecipes;
+    }
+    //this method works with getShoppingNeededIngredients to create the ingredient array
+    private static Ingredient[] getIngredientArray(Recipe[] r){
+        //creating connection to database
+        Connection conn = DatabaseHandler.setupConnection();
+        //preparing oracle objects
+        OraclePreparedStatement pst = null;
+        OracleResultSet rs = null;        
+        //preparing mealplan list
+        List<Ingredient> currentIngredients = new ArrayList<Ingredient>();
+        for(int j=0; j<r.length;j++){
+            try
+            {
+                //grabbing all rows from the recipe table
+                String sqlStatement = "SELECT * FROM RecipeIngredients WHERE  RecipeID=?";            
+                pst = (OraclePreparedStatement) conn.prepareStatement(sqlStatement);
+                //adding data to prepared statement
+                pst.setInt(1, r[j].getID());
+
+                //will contain the rows from the query
+                rs = (OracleResultSet) pst.executeQuery();
+                //iterating through each row
+                while(rs.next()){
+                    //set the mealplan's id
+                    String name = rs.getString("IngredientsName");
+                    Ingredient i = new Ingredient (name);
+                    currentIngredients.add(i);
+                }
+            }
+            catch (Exception e)
+            {
+                //display an error message of what went wrong
+                JOptionPane.showMessageDialog(null, e);
+            }
+            finally
+            {            
+            }
+        }
+        //close the connections
+        DatabaseHandler.close(rs);
+        DatabaseHandler.close(pst);
+        DatabaseHandler.close(conn);
+        
+        Ingredient[] returnedIngredients = new Ingredient[currentIngredients.size()];
+        for(int k=0; k<currentIngredients.size();k++){
+            returnedIngredients[k]=currentIngredients.get(k);
+        }
+        return returnedIngredients;
     }
 }

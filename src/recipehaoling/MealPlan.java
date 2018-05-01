@@ -20,6 +20,10 @@ public class MealPlan {
         meal = m;
         day = d;
     }
+    MealPlan(int i, String wID){
+        id = i;
+        weekID = wID;
+    }
     public String getMeal(){
         return meal;
     }
