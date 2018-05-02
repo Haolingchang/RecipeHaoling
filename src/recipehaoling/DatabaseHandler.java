@@ -524,7 +524,7 @@ public class DatabaseHandler {
         try
         {
             //grabbing all rows from the recipe table
-            String sqlStatement = "SELECT * FROM MealPlan WHERE DayOfWeek=? and weekID=? and Meal=?";            
+            String sqlStatement = "SELECT * FROM MealPlan WHERE DayOfWeek=? and upper(weekID)=upper(?) and Meal=?";            
             pst = (OraclePreparedStatement) conn.prepareStatement(sqlStatement);
             //adding data to prepared statement
             pst.setString(1, m.getDay());
@@ -679,7 +679,7 @@ public class DatabaseHandler {
         try
         {
             //grabbing all rows from the recipe table
-            String sqlStatement = "SELECT * FROM MealPlan WHERE  weekID=?";            
+            String sqlStatement = "SELECT * FROM MealPlan WHERE  upper(weekID)=upper(?)";            
             pst = (OraclePreparedStatement) conn.prepareStatement(sqlStatement);
             //adding data to prepared statement
             pst.setString(1, weekID);
